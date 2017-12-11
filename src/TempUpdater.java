@@ -59,40 +59,77 @@ public class TempUpdater extends RecursiveAction {
         double temp3;
         double[] neighborValues = {0,0,0,0};
 
-        int neighborCount = 0;
-
         for (int i = startRow; i <= endRow; i++) {
-            for(int j = 0; j < regions[0].length; j++) {
-                for(int k = 0; k < regions[i][j].Neighbors.length; k++){
-                    if(regions[i][j].Neighbors[k].ID != -1) {
-                        neighborValues[k] = regions[i][j].Neighbors[k].Temperature * (regions[i][j].Neighbors[k].getMainBaseMetalComp()/100);
+            for(int j = 0; j < r[0].length; j++) {
+                if(r[i][j].ID != 0 && r[i][j].ID != r[0].length*r.length - 1) {
+                    for (int k = 0; k < r[i][j].Neighbors.length; k++) {
+                        if (r[i][j].Neighbors[k].ID != -1) {
+                            neighborValues[k] = r[i][j].Neighbors[k].Temperature * (r[i][j].Neighbors[k].getMainBaseMetalComp() / 100);
+                        }
+
                     }
+                    temp1 = Main.metalConstant1 * ((neighborValues[0] + neighborValues[1] + neighborValues[2] + neighborValues[3]) / (r[i][j].neighborCount));
 
-                }
-                temp1 = Main.metalConstant1 * ((neighborValues[0] + neighborValues[1] + neighborValues[2] + neighborValues[3])/(regions[i][j].neighborCount));
+                    Arrays.fill(neighborValues, 0);
 
-                Arrays.fill(neighborValues, 0);
+                    for (int k = 0; k < r[i][j].Neighbors.length; k++) {
+                        if (r[i][j].Neighbors[k].ID != -1) {
+                            neighborValues[k] = r[i][j].Neighbors[k].Temperature * (r[i][j].Neighbors[k].getBaseMetal2Comp() / 100);
+                        }
 
-                for(int k = 0; k < regions[i][j].Neighbors.length; k++){
-                    if(regions[i][j].Neighbors[k].ID != -1) {
-                        neighborValues[k] = regions[i][j].Neighbors[k].Temperature * (regions[i][j].Neighbors[k].getBaseMetal2Comp()/100);
                     }
+                    temp2 = Main.metalConstant2 * ((neighborValues[0] + neighborValues[1] + neighborValues[2] + neighborValues[3]) / (r[i][j].neighborCount));
 
-                }
-                temp2 = Main.metalConstant2 * ((neighborValues[0] + neighborValues[1] + neighborValues[2] + neighborValues[3])/(regions[i][j].neighborCount));
+                    Arrays.fill(neighborValues, 0);
 
-                Arrays.fill(neighborValues, 0);
+                    for (int k = 0; k < r[i][j].Neighbors.length; k++) {
+                        if (r[i][j].Neighbors[k].ID != -1) {
+                            neighborValues[k] = r[i][j].Neighbors[k].Temperature * (r[i][j].Neighbors[k].getBaseMetal3Comp() / 100);
+                        }
 
-                for(int k = 0; k < regions[i][j].Neighbors.length; k++){
-                    if(regions[i][j].Neighbors[k].ID != -1) {
-                        neighborValues[k] = regions[i][j].Neighbors[k].Temperature * (regions[i][j].Neighbors[k].getBaseMetal3Comp()/100);
                     }
+                    temp3 = Main.metalConstant3 * ((neighborValues[0] + neighborValues[1] + neighborValues[2] + neighborValues[3]) / (r[i][j].neighborCount));
 
+                    Arrays.fill(neighborValues, 0);
+                    r[i][j].setTemperature(temp1 + temp2 + temp3);
                 }
-                temp3 = Main.metalConstant3 * ((neighborValues[0] + neighborValues[1] + neighborValues[2] + neighborValues[3])/(regions[i][j].neighborCount));
+            }
 
-                Arrays.fill(neighborValues, 0);
-                regions[i][j].setTemperature(temp1 + temp2 + temp3);
+        }
+        for (int i = endRow; i >= startRow; i--) {
+            for(int j = r[0].length - 1; j >= 0 ; j--) {
+                if(r[i][j].ID != 0 && r[i][j].ID != r[0].length*r.length - 1) {
+                    for (int k = 0; k < r[i][j].Neighbors.length; k++) {
+                        if (r[i][j].Neighbors[k].ID != -1) {
+                            neighborValues[k] = r[i][j].Neighbors[k].Temperature * (r[i][j].Neighbors[k].getMainBaseMetalComp() / 100);
+                        }
+
+                    }
+                    temp1 = Main.metalConstant1 * ((neighborValues[0] + neighborValues[1] + neighborValues[2] + neighborValues[3]) / (r[i][j].neighborCount));
+
+                    Arrays.fill(neighborValues, 0);
+
+                    for (int k = 0; k < r[i][j].Neighbors.length; k++) {
+                        if (r[i][j].Neighbors[k].ID != -1) {
+                            neighborValues[k] = r[i][j].Neighbors[k].Temperature * (r[i][j].Neighbors[k].getBaseMetal2Comp() / 100);
+                        }
+
+                    }
+                    temp2 = Main.metalConstant2 * ((neighborValues[0] + neighborValues[1] + neighborValues[2] + neighborValues[3]) / (r[i][j].neighborCount));
+
+                    Arrays.fill(neighborValues, 0);
+
+                    for (int k = 0; k < r[i][j].Neighbors.length; k++) {
+                        if (r[i][j].Neighbors[k].ID != -1) {
+                            neighborValues[k] = r[i][j].Neighbors[k].Temperature * (r[i][j].Neighbors[k].getBaseMetal3Comp() / 100);
+                        }
+
+                    }
+                    temp3 = Main.metalConstant3 * ((neighborValues[0] + neighborValues[1] + neighborValues[2] + neighborValues[3]) / (r[i][j].neighborCount));
+
+                    Arrays.fill(neighborValues, 0);
+                    r[i][j].setTemperature(temp1 + temp2 + temp3);
+                }
             }
 
         }
@@ -101,12 +138,14 @@ public class TempUpdater extends RecursiveAction {
 
     public void compute(){
 
-        if(regions[0].length * regions.length < 2000){
+        updateTemps(regions);
+
+        /*if(regions[0].length * regions.length < 2000){
             updateTemps(regions);
         }else{
             invokeAll(new TempUpdater(regions, startRow, splitTop(regions)), new TempUpdater(regions, splitBot(), endRow));
 
-        }
+        }*/
 
     }
 }

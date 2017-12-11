@@ -9,9 +9,9 @@ public class Main {
     //args[] parameters: (Top left corner heat, Bottom right corner heat, Constant 1, Constant 2, Constant 3, Height, threshold)
     public static void main(String args[]){
 
-        metalConstant1 = Double.parseDouble(args[2]);
-        metalConstant2 = Double.parseDouble(args[3]);
-        metalConstant3 = Double.parseDouble(args[4]);
+        metalConstant1 = Double.parseDouble(args[2]) / 100;
+        metalConstant2 = Double.parseDouble(args[3]) / 100;
+        metalConstant3 = Double.parseDouble(args[4]) / 100;
 
         final int height = Integer.parseInt(args[5]);
         final int width = height * 2;
@@ -43,6 +43,7 @@ public class Main {
         ForkJoinPool pool = new ForkJoinPool();
         TempUpdater tempUpdater = new TempUpdater(alloy.regions,0, height -1);
 
+        //alloy.updateTemps(alloy.regions);
         pool.execute(tempUpdater);
 
         pool.shutdown();

@@ -3,9 +3,9 @@ import java.util.Random;
 public class Region {
     Integer ID = -1;
     Region[] Neighbors = new Region[4];
-    private int MainBaseMetalComp;
-    private int BaseMetal2Comp;
-    private int BaseMetal3Comp;
+    private double MainBaseMetalComp;
+    private double BaseMetal2Comp;
+    private double BaseMetal3Comp;
     //Random compRandom = new Random();
     double Temperature;
     int LocationX=0;
@@ -58,10 +58,10 @@ public class Region {
         int randomLeft = 25;
         Random compRandom = new Random();
         BaseMetal2Comp = compRandom.nextInt(26);
-        randomLeft = randomLeft - BaseMetal2Comp;
+        randomLeft = randomLeft - (int)BaseMetal2Comp;
         if (randomLeft != 0) {
             BaseMetal3Comp = compRandom.nextInt(randomLeft);
-            randomLeft = randomLeft - BaseMetal3Comp;
+            randomLeft = randomLeft - (int)BaseMetal3Comp;
         }
         MainBaseMetalComp = 75 + randomLeft;
 
@@ -75,14 +75,14 @@ public class Region {
         Temperature = t;
     }
 
-    public int getBaseMetal3Comp(){
+    public double getBaseMetal3Comp(){
         return BaseMetal3Comp;
     }
-    public int getBaseMetal2Comp(){
+    public double getBaseMetal2Comp(){
         return BaseMetal2Comp;
     }
 
-    public int getMainBaseMetalComp(){
+    public double getMainBaseMetalComp(){
         return MainBaseMetalComp;
     }
 }
