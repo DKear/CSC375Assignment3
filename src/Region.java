@@ -1,3 +1,6 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Region {
@@ -11,6 +14,7 @@ public class Region {
     int LocationX=0;
     int LocationY=0;
     int neighborCount;
+    JPanel panel = new JPanel();
     String neighborString;
 
     public void setLocation(int y, int x){
@@ -84,5 +88,40 @@ public class Region {
 
     public double getMainBaseMetalComp(){
         return MainBaseMetalComp;
+    }
+
+    private Image createHeatImage(Color c){
+        BufferedImage bufferedImage = new BufferedImage(10,10, BufferedImage.TYPE_INT_RGB);
+        int rgb = c.getRGB();
+
+        for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 10; j++){
+                bufferedImage.setRGB(i, j, rgb);
+            }
+        }
+        return bufferedImage;
+    }
+
+    public void paint(Graphics g){
+
+        double heatDouble = this.getTemperature();
+        Color heatColor;
+
+        if(heatDouble < 255){
+            heatColor = new Color(255 - (int)heatDouble, 255, 255);
+        }else if(heatDouble < 510){
+            heatColor = new Color(0, 255 - ((int)heatDouble % 255), 255);
+        }else if(heatDouble < 765){
+            heatColor = new Color((int)heatDouble%510, 0, 255);
+        }else if(heatDouble < 1020){
+            heatColor = new Color(255, 0,255 - ((int)heatDouble%765));
+        } else if(heatDouble < 1275){
+            heatColor = new Color( 255, (int)heatDouble%1020, 0);
+        } else{
+            heatColor = new Color( 255,255, 0);
+        }
+
+        Image img = createHeatImage(heatColor);
+        g.drawImage(img, this.LocationX *10, this.LocationY *10, panel);
     }
 }

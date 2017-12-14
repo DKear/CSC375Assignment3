@@ -1,6 +1,11 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 
-public class Main {
+public class Main extends JPanel {
+
+
 
     public static double metalConstant1;
     public static double metalConstant2;
@@ -8,6 +13,14 @@ public class Main {
 
     //args[] parameters: (Top left corner heat, Bottom right corner heat, Constant 1, Constant 2, Constant 3, Height, threshold)
     public static void main(String args[]){
+
+        JFrame frame = new JFrame();
+        JPanel panel = new JPanel(new GridBagLayout());
+        frame.add(panel);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1920, 1080);
+        frame.setVisible(true);
 
         metalConstant1 = Double.parseDouble(args[2]) / 100;
         metalConstant2 = Double.parseDouble(args[3]) / 100;
@@ -38,15 +51,21 @@ public class Main {
         }
 
         alloy.regions[0][0].setTemperature(Double.parseDouble(args[0]));
+        //alloy.regions[10][10].setTemperature(20000);
         alloy.regions[height - 1][width - 1].setTemperature(Double.parseDouble(args[1]));
 
         ForkJoinPool pool = new ForkJoinPool();
-        TempUpdater tempUpdater = new TempUpdater(alloy.regions,0, height -1);
+        TempUpdater tempUpdater = new TempUpdater(alloy.regions,0, height -1, panel);
+        /*for(;;) {
+            System.out.println("test");
+            alloy.updateTemps(alloy.regions, panel);
+        }*/
 
-        //alloy.updateTemps(alloy.regions);
-        pool.execute(tempUpdater);
+            pool.execute(tempUpdater);
 
-        pool.shutdown();
+
+            pool.shutdown();
+
 
 
 
